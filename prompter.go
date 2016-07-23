@@ -46,24 +46,52 @@ type PromptValueValidator func(*Prompt, string) (string, Validity)
 
 // Prompter - the primary prompt controller
 type Prompter struct {
-	Reader        *bufio.Reader
-	Values        map[string]interface{}
+	Reader *bufio.Reader
+
+	// Values - map of all completed values keyed on the Prompt's Message value
+	Values map[string]interface{}
+
+	// IndexedValues - all completed values based on the order they were entered
 	IndexedValues []interface{}
-	TrimSpace     bool
-	PromptSuffix  string
+
+	// TrimSpace - should we trim leading and trailing spaces?
+	TrimSpace bool
+
+	// PromptSuffix - should we add a suffix to the end of the prompt message for
+	// all messages
+	PromptSuffix string
 }
 
 // Prompt - an individual request to get back information via a prompt
 type Prompt struct {
-	Message            string
-	DefaultValue       interface{}
-	Required           Optionality
-	RetryIfNoMatch     bool
-	ValueHint          string
-	FailIfNoMatch      bool
+	// Message - the prompt message
+	Message string
+
+	// ValueHint - textual hint to the user describing what they should enter
+	ValueHint string
+
+	// DefaultValue - the value that will be returned if no value is entered and the
+	// entry is not required
+	DefaultValue interface{}
+
+	// Required - whether or not the entry is required
+	Required Optionality
+
+	// RetryIfNoMatch - should we re-ask for a value if no match / value was entered
+	RetryIfNoMatch bool
+
+	// FailIfNoMatch - should the entry fail if it doesn't pass validation?
+	FailIfNoMatch bool
+
+	// CaseSensitiveMatch - should we do a case sensitive check of acceptable values
 	CaseSensitiveMatch bool
-	ValueConverter     PromptValueConverter
-	ValidationFunc     PromptValueValidator
+
+	// ValueConverter - logic to do conversion of the string entry to your preferred output
+	// type
+	ValueConverter PromptValueConverter
+
+	// ValidationFunc - logic to validate the entry
+	ValidationFunc PromptValueValidator
 }
 
 // NewPrompter - creates a new prompter instance

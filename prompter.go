@@ -130,6 +130,12 @@ func (pmt *Prompter) Do(prompts ...Prompt) []map[string]interface{} {
 	return values
 }
 
+// ClearValues - clear any currently tracked values
+func (pmt *Prompter) ClearValues() {
+	pmt.Values = map[string]interface{}{}
+	pmt.IndexedValues = []interface{}{}
+}
+
 // internal
 
 // storeValuesAndReturn - wrapper to avoid repeating value storage

@@ -43,7 +43,9 @@ import github.com/goposse/tardy
 
 # Getting started
 
-Let's run through a super simple example.
+This is a super simple overview. If you want to really understand Tardy, we suggest you check out the [Tardy Guide](https://github.com/goposse/tardy/wiki).
+
+Anyhow, let's run through a super simple example.
 
 ```go
 p := tardy.NewPrompter()

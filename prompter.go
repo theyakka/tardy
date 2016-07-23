@@ -86,8 +86,8 @@ type Prompt struct {
 	// CaseSensitiveMatch - should we do a case sensitive check of acceptable values
 	CaseSensitiveMatch bool
 
-	// ValueConverter - logic to do conversion of the string entry to your preferred output
-	// type
+	// ValueConverter - logic to do conversion of the string entry to your preferred
+	// output type
 	ValueConverter PromptValueConverter
 
 	// ValidationFunc - logic to validate the entry
@@ -107,7 +107,8 @@ func NewPrompter() Prompter {
 	return prompter
 }
 
-// Prompt - prompt for a single entry and return the provided value and validity status
+// Prompt - prompt for a single entry and return the provided value and validity
+// status
 func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	fmt.Print(pmt.formattedPromptMessage(prompt))
 	readString, err := pmt.Reader.ReadString('\n')
@@ -144,8 +145,9 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	return pmt.storeValuesAndReturn(prompt, finalValue, IsValid)
 }
 
-// Do - add a series of prompts in one go. will return an array containing a map of the
-// value and validity values for each prompt (i.e.: { "value" : "..", "validity" : ".." }).
+// Do - add a series of prompts in one go. will return an array containing a map
+// of the value and validity values for each prompt (i.e.: { "value" : "..",
+// "validity" : ".." }).
 func (pmt *Prompter) Do(prompts ...Prompt) []map[string]interface{} {
 	values := []map[string]interface{}{}
 	for _, prompt := range prompts {
@@ -185,8 +187,9 @@ func (pmt *Prompter) formattedPromptMessage(prompt Prompt) string {
 	return fmt.Sprintf("%s%s%s  ", prompt.Message, hint, suffix)
 }
 
-// isPositiveStringValue - returns true if the string value matches the list of positive
-// string values. empty or non-matched value will return the noMatchValue.
+// isPositiveStringValue - returns true if the string value matches the list of
+// positive string values. empty or non-matched value will return the
+// noMatchValue.
 func isPositiveStringValue(value string, noMatchValue bool) bool {
 	if value == "" {
 		return noMatchValue

@@ -20,6 +20,7 @@ What can tardy do? Lots!
   - Open-ended string values
   - Yes / No values
   - Pick from list of possible values
+- Retry values that don't meet criteria or are not supplied (if not optional)
 - Optionality and default prompt values
 - Case sensitive (or insensitive) matching
 - Extensible `Prompt` struct so you're not constrained when you need a custom input type with the following features:

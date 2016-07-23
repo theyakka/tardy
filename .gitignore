@@ -1,0 +1,16 @@
+# mac system
+.DS_Store
+.Spotlight-V100
+.Trashes
+*.swp
+*~.nib
+
+# direnv
+.envrc
+
+# temp / build locations
+/bin
+/src
+/pkg
+/dist
+.DS

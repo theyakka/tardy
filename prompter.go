@@ -50,7 +50,7 @@ type Prompter struct {
 	Values        map[string]interface{}
 	IndexedValues []interface{}
 	TrimSpace     bool
-	ColonAtEnd    bool
+	PromptSuffix  string
 }
 
 // Prompt - an individual request to get back information via a prompt
@@ -74,7 +74,7 @@ func NewPrompter() Prompter {
 		Values:        map[string]interface{}{},
 		IndexedValues: []interface{}{},
 		TrimSpace:     true,
-		ColonAtEnd:    true,
+		PromptSuffix:  ":  ",
 	}
 	return prompter
 }
@@ -140,15 +140,15 @@ func (pmt *Prompter) storeValuesAndReturn(prompt Prompt, value interface{}, vali
 }
 
 func (pmt *Prompter) formattedPromptMessage(prompt Prompt) string {
-	colon := ""
-	if pmt.ColonAtEnd {
-		colon = ":"
+	suffix := ""
+	if pmt.PromptSuffix != "" {
+		suffix = pmt.PromptSuffix
 	}
 	hint := ""
 	if prompt.ValueHint != "" {
 		hint = " " + prompt.ValueHint
 	}
-	return fmt.Sprintf("%s%s%s  ", prompt.Message, hint, colon)
+	return fmt.Sprintf("%s%s%s  ", prompt.Message, hint, suffix)
 }
 
 // isPositiveStringValue - returns true if the string value matches the list of positive

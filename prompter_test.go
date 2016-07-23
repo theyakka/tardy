@@ -21,6 +21,22 @@ func testSimpleEntry(t *testing.T, prompter *Prompter, input string, expectedOut
 	return matchesExpected
 }
 
+func testSingleMatchEntry(t *testing.T, prompter *Prompter, input string, allowedValues []string, expectedOutput string, required Optionality, defaultValue string, checkFails bool) bool {
+	loggedInput := strings.TrimSpace(input)
+	if loggedInput == "" {
+		loggedInput = "<empty>"
+	}
+	prompter.Reader.Reset(strings.NewReader(input))
+	prompt := SingleValuePrompt("Enter a value", "["+strings.Join(allowedValues, ", ")+"]", allowedValues, required, defaultValue)
+	val, _ := prompter.Prompt(prompt)
+	fmt.Print("\n  > input: '", loggedInput, "', output: '", val, "', expected: '", expectedOutput, "'\n\n")
+	matchesExpected := val == expectedOutput
+	if matchesExpected == false && checkFails == true {
+		t.Error("Expected output does not match input")
+	}
+	return matchesExpected
+}
+
 func TestMain(t *testing.T) {
 
 	p := NewPrompter()
@@ -33,6 +49,12 @@ func TestMain(t *testing.T) {
 	testSimpleEntry(t, &p, "test 1234\n", "test1234", Required, "", false)
 	testSimpleEntry(t, &p, emptyString, "test 1234", NotRequired, "test 1234", true)
 	testSimpleEntry(t, &p, emptyString, "test 1234", NotRequired, "test", false)
+
+	testSingleMatchEntry(t, &p, "red\n", []string{"red", "Green", "YELLOW", "puRple"}, "red", Required, "", true)
+	testSingleMatchEntry(t, &p, "purple\n", []string{"red", "Green", "YELLOW", "puRple"}, "puRple", Required, "", true)
+	testSingleMatchEntry(t, &p, "blue\n", []string{"red", "Green", "YELLOW", "puRple"}, "red", Required, "", false)
+	testSingleMatchEntry(t, &p, emptyString, []string{"red", "Green", "YELLOW", "puRple"}, "puRple", NotRequired, "puRple", true)
+	testSingleMatchEntry(t, &p, emptyString, []string{"red", "Green", "YELLOW", "puRple"}, "puRple", NotRequired, "blue", false)
 
 	fmt.Print("\n\n")
 }

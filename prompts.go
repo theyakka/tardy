@@ -40,12 +40,17 @@ func SingleValuePrompt(message string, hint string, values []string, required Op
 		CaseSensitiveMatch: false,
 		ValidationFunc: func(prompt *Prompt, value string) (string, Validity) {
 			useValue := value
-			if !prompt.CaseSensitiveMatch {
+			originalValues := values
+			checkStrings := values
+			if prompt.CaseSensitiveMatch == false {
 				useValue = strings.ToLower(useValue)
+				checkStrings = mapStrings(checkStrings, func(s string) string {
+					return strings.ToLower(s)
+				})
 			}
-			for _, v := range values {
-				if useValue == strings.ToLower(v) {
-					return v, IsValid
+			for idx, v := range checkStrings {
+				if useValue == v {
+					return originalValues[idx], IsValid
 				}
 			}
 			validity := IsValid

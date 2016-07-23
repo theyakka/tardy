@@ -156,3 +156,11 @@ func isPositiveStringValue(value string, noMatchValue bool) bool {
 	}
 	return noMatchValue
 }
+
+func mapStrings(source []string, f func(string) string) []string {
+	out := make([]string, len(source))
+	for idx, val := range source {
+		out[idx] = f(val)
+	}
+	return out
+}

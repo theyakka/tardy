@@ -152,7 +152,7 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	if prompt.ValidationFunc != nil {
 		finalValue, validity = prompt.ValidationFunc(&prompt, finalValue.(string))
 	}
-	if validity == IsNotValid {
+	if prompt.RetryIfNoMatch && validity == IsNotValid {
 		fmt.Print("ERROR: Not a valid response.\n\n")
 		return pmt.Prompt(prompt)
 	}
@@ -203,22 +203,6 @@ func (pmt *Prompter) formattedPromptMessage(prompt Prompt) string {
 		hint = " " + prompt.ValueHint
 	}
 	return fmt.Sprintf("%s%s%s  ", prompt.Message, hint, suffix)
-}
-
-// isPositiveStringValue - returns true if the string value matches the list of
-// positive string values. empty or non-matched value will return the
-// noMatchValue.
-func isPositiveStringValue(value string, noMatchValue bool) bool {
-	if value == "" {
-		return noMatchValue
-	}
-	switch strings.ToLower(value) {
-	case "yes", "y", "yo", "si", "yup", "ya", "yep":
-		return true
-	case "no", "n", "nope", "no way", "nuh uh", "nah":
-		return false
-	}
-	return noMatchValue
 }
 
 func mapStrings(source []string, f func(string) string) []string {

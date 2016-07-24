@@ -11,7 +11,8 @@ package tardy
 
 import "strings"
 
-// SimplePrompt - a simple prompt to get a value with no restrictions. allows for a default.
+// SimplePrompt - a simple prompt to get a value with no restrictions. allows for
+// a default.
 func SimplePrompt(message string, required Optionality, defaultValue string) Prompt {
 	return Prompt{
 		Message:            message,
@@ -22,7 +23,21 @@ func SimplePrompt(message string, required Optionality, defaultValue string) Pro
 	}
 }
 
-// YesNoPrompt - prompts for a yes or no answer. the final value will be a boolean. allows for a default.
+// SimpleSecurePrompt - a simple prompt to get a value with no restrictions.
+// entry is capture without local echo (typing not visible). allows for a default.
+func SimpleSecurePrompt(message string, required Optionality, defaultValue string) Prompt {
+	return Prompt{
+		Message:            message,
+		DefaultValue:       defaultValue,
+		Required:           required,
+		RetryIfNoMatch:     true,
+		CaseSensitiveMatch: false,
+		SecureEntry:        true,
+	}
+}
+
+// YesNoPrompt - prompts for a yes or no answer. the final value will be a
+// boolean. allows for a default.
 func YesNoPrompt(message string, hint string, required Optionality, defaultValue bool) Prompt {
 	return Prompt{
 		Message:            message,
@@ -42,7 +57,8 @@ func YesNoPrompt(message string, hint string, required Optionality, defaultValue
 	}
 }
 
-// SingleValuePrompt - prompts for an answer from within a subset of valid answers. allows for a default.
+// SingleValuePrompt - prompts for an answer from within a subset of valid
+// answers. allows for a default.
 func SingleValuePrompt(message string, hint string, values []string, required Optionality, defaultValue string) Prompt {
 	return Prompt{
 		Message:            message,

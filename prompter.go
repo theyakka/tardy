@@ -14,6 +14,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	term "golang.org/x/crypto/ssh/terminal"
 )
 
 // Validity - whether thing is valid (for better visibility)
@@ -70,6 +72,9 @@ type Prompt struct {
 	// ValueHint - textual hint to the user describing what they should enter
 	ValueHint string
 
+	// SecureEntry - whether or not what the user is typing should be visible
+	SecureEntry bool
+
 	// DefaultValue - the value that will be returned if no value is entered and the
 	// entry is not required
 	DefaultValue interface{}
@@ -111,7 +116,19 @@ func NewPrompter() Prompter {
 // status
 func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	fmt.Print(pmt.formattedPromptMessage(prompt))
-	readString, err := pmt.Reader.ReadString('\n')
+
+	var readString string
+	var err error
+	if !prompt.SecureEntry {
+		var passwd []byte
+		passwd, err = term.ReadPassword(int(os.Stdin.Fd()))
+		if err == nil {
+			readString = string(passwd)
+		}
+	} else {
+		readString, err = pmt.Reader.ReadString('\n')
+	}
+
 	if err != nil {
 		return pmt.storeValuesAndReturn(prompt, prompt.DefaultValue, IsNotValid)
 	}

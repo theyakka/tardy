@@ -119,12 +119,13 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 
 	var readString string
 	var err error
-	if !prompt.SecureEntry {
+	if prompt.SecureEntry {
 		var passwd []byte
 		passwd, err = term.ReadPassword(int(os.Stdin.Fd()))
 		if err == nil {
 			readString = string(passwd)
 		}
+		fmt.Println("")
 	} else {
 		readString, err = pmt.Reader.ReadString('\n')
 	}

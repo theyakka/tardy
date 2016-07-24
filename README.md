@@ -6,6 +6,7 @@ Tardy is an easy to use, but highly configurable, CLI / terminal prompt library 
 
 [![Go Version](https://img.shields.io/badge/Go-1.4+-lightgrey.svg)](https://golang.org/)
 [![Build Status](https://travis-ci.org/goposse/tardy.svg?branch=master)](https://travis-ci.org/goposse/tardy)
+[![Coverage](https://coveralls.io/repos/github/goposse/tardy/badge.svg?branch=master)](https://coveralls.io/github/goposse/tardy?branch=master)
 [![GoDoc](https://godoc.org/github.com/goposse/tardy?status.svg)](http://godoc.org/github.com/goposse/tardy)
 
 <p>&nbsp;</p>

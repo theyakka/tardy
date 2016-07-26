@@ -46,9 +46,37 @@ type PromptValueConverter func(*Prompt, string) interface{}
 // PromptValueValidator - checks to see if the value provided matches the criteria
 type PromptValueValidator func(*Prompt, string) (string, Validity)
 
+// PromptReader - interface that provides prompt reading capabilities
+type PromptReader interface {
+	// ReadClearText - read a clear text prompt
+	ReadClearText(file *os.File) (string, error)
+
+	// ReadSecureText - read a secure text prompt
+	ReadSecureText(file *os.File) (string, error)
+}
+
+// StandardPromptReader - default prompt reader
+type StandardPromptReader struct{}
+
+// ReadClearText - standard clear text reader
+func (pr StandardPromptReader) ReadClearText(file *os.File) (string, error) {
+	reader := bufio.NewReader(file)
+	return reader.ReadString('\n')
+}
+
+// ReadSecureText - standard clear text reader
+func (pr StandardPromptReader) ReadSecureText(file *os.File) (string, error) {
+	finalString := ""
+	bytes, err := term.ReadPassword(int(file.Fd()))
+	if err == nil {
+		finalString = string(bytes)
+	}
+	return finalString, err
+}
+
 // Prompter - the primary prompt controller
 type Prompter struct {
-	Reader *bufio.Reader
+	Reader PromptReader
 
 	// Values - map of all completed values keyed on the Prompt's Message value
 	Values map[string]interface{}
@@ -101,7 +129,7 @@ type Prompt struct {
 
 // NewPrompter - creates a new prompter instance
 func NewPrompter() Prompter {
-	reader := bufio.NewReader(os.Stdin)
+	reader := StandardPromptReader{}
 	prompter := Prompter{
 		Reader:        reader,
 		Values:        map[string]interface{}{},
@@ -120,14 +148,9 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	var readString string
 	var err error
 	if prompt.SecureEntry {
-		var passwd []byte
-		passwd, err = term.ReadPassword(int(os.Stdin.Fd()))
-		if err == nil {
-			readString = string(passwd)
-		}
-		fmt.Println("")
+		readString, err = pmt.Reader.ReadSecureText(os.Stdin)
 	} else {
-		readString, err = pmt.Reader.ReadString('\n')
+		readString, err = pmt.Reader.ReadClearText(os.Stdin)
 	}
 
 	if err != nil {

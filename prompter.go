@@ -119,6 +119,12 @@ type Prompt struct {
 	// CaseSensitiveMatch - should we do a case sensitive check of acceptable values
 	CaseSensitiveMatch bool
 
+	// NotValidErrorMessage - displayed when the user enters an invalid value
+	NotValidErrorMessage string
+
+	// NoValueErrorMessage - displayed when the user enters no value and entry is required
+	NoValueErrorMessage string
+
 	// ValueConverter - logic to do conversion of the string entry to your preferred
 	// output type
 	ValueConverter PromptValueConverter
@@ -167,7 +173,11 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 	}
 
 	if finalValue == "" && prompt.Required == Required {
-		fmt.Print("ERROR: You must provide a value.\n\n")
+		errorMessage := prompt.NoValueErrorMessage
+		if errorMessage == "" {
+			errorMessage = "ERROR: You must provide a value."
+		}
+		fmt.Printf("%s\n\n", errorMessage)
 		return pmt.Prompt(prompt)
 	}
 
@@ -176,7 +186,11 @@ func (pmt *Prompter) Prompt(prompt Prompt) (interface{}, Validity) {
 		finalValue, validity = prompt.ValidationFunc(&prompt, finalValue.(string))
 	}
 	if prompt.RetryIfNoMatch && validity == IsNotValid {
-		fmt.Print("ERROR: Not a valid response.\n\n")
+		errorMessage := prompt.NotValidErrorMessage
+		if errorMessage == "" {
+			errorMessage = "ERROR: Not a valid response."
+		}
+		fmt.Printf("%s\n\n", errorMessage)
 		return pmt.Prompt(prompt)
 	}
 
